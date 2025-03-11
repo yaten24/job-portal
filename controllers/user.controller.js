@@ -13,8 +13,8 @@ export const register = async ( req , res ) => {
                 success: false
             });
         };
-        const user = await User.findOne({email});
 
+        const user = await User.findOne({email});
         if (user) {
             return res.status(400).json({
                 message: 'User already exist',
@@ -23,7 +23,6 @@ export const register = async ( req , res ) => {
         }
 
         const hashedPassword = await bcrypt.hash( password , 10);
-
         await User.create({ 
             fullname, 
             email, 
@@ -78,7 +77,6 @@ export const login = async ( req , res ) => {
         const tokenData = {
             userId:user._id
         }
-
         const token = await jwt.sign(tokenData, process.env.SECRET_KEY,{expiresIn:'1d'});
 
         user = {
@@ -89,9 +87,67 @@ export const login = async ( req , res ) => {
             role: user.role,
             profile: user.profile
         }
-
         return res.status(200).cookie("token" , token , {maxAge:1*24*60*60*1000, httpsOnly:true, sameSite:'strict'}).json({
             message:`Walcome Back ${user.fullname}`,
+            user,
+            succes: true
+        })
+
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+
+export const logout = async (req, res) => {
+    try {
+        return res.status(200).cookie("token" , "" , {maxAge:0}).json({
+            message: "Logged out succesfully",
+            succes: true
+        })
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
+
+export const updateProfile = async (req , res) => {
+    try {
+        const { fullname, email, phoneNumber, bio, skills } = req.body;
+        if( !fullname, !email, !phoneNumber, !bio, !skills ){
+            return res.status(400).json({
+                message: "Something is missing",
+                succes: false
+            });
+        };
+        const skillsArray = skills.split(",");
+        const userId = req.id; //middleware authentication
+        
+
+        let user = await User.findOne(userId);
+
+        //updating the data
+        user.fullname = fullname,
+        user.email = email,
+        user.phoneNumber = phoneNumber,
+        user.profile.bio = bio,
+        user.profile.skills = skillsArray
+
+        //resume will be added here soon
+
+        //saving the data in the database 
+        await user.save();
+
+        user = {
+            _id: user._id,
+            fullname: user.fullname,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            role: user.role,
+            profile: user.profile
+        }
+        return res.status(200).cookie("token" , token , {maxAge:1*24*60*60*1000, httpsOnly:true, sameSite:'strict'}).json({
+            message:`Updated Profile succesfully`,
             user,
             succes: true
         })
