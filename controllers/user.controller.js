@@ -6,8 +6,8 @@ dotenv.config({});
 
 export const register = async ( req , res ) => {
     try {
-        const { fullname , email , phoneNumber , password , role} = req.body;
-        if ( !fullname || !email || !phoneNumber || !password || !role){
+        const {fullname , email , phoneNumber , password , role} = req.body;
+        if (!fullname || !email || !phoneNumber || !password || !role){
             return res.status(400).json({
                 message: 'Somthing is missing',
                 success: false
@@ -43,7 +43,7 @@ export const register = async ( req , res ) => {
 export const login = async ( req , res ) => {
     try {
         const { email , password , role } = req.body;
-        if ( !email , !password , !role ) {
+        if ( !email || !password || !role ) {
             return res.status(400).json({
                 message: 'Somthing is missing',
                 success: false

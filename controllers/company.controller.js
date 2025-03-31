@@ -45,7 +45,7 @@ export const getCompany = async (req, res) => {
         };
 
         return res.status(201).json({
-            message: "Companies fathed",
+            message: "Companies fatched",
             success: true
         })
     } catch (error) {
