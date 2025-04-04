@@ -25,7 +25,7 @@ export const registerCompany = async (req, res) => {
         return res.status(200).json({
             message: "Company register successfully",
             company,
-            success: false
+            success: true
         })
     } catch (error) {
         console.log(error);
@@ -34,7 +34,6 @@ export const registerCompany = async (req, res) => {
 
 export const getCompany = async (req, res) => {
     try {
-        
         const userId = req.id;
         const company = await Company.find({userId});
         if(!company){
@@ -94,6 +93,7 @@ export const updateCompany = async (req, res) => {
 
         return res.status(200).json({
             messsage: "Company Information Updated",
+            company,
             success: true
         })
     } catch (error) {
