@@ -4,37 +4,38 @@ import jwt from "jsonwebtoken"
 import dotenv from 'dotenv'
 dotenv.config({});
 
-export const register = async ( req , res ) => {
+export const register = async (req, res) => {
     try {
-        const {fullname , email , phoneNumber , password , role} = req.body;
-        if (!fullname || !email || !phoneNumber || !password || !role){
+        const { fullname, email, phoneNumber, password, role } = req.body;
+         
+        if (!fullname || !email || !phoneNumber || !password || !role) {
             return res.status(400).json({
-                message: 'Somthing is missing',
+                message: "Something is missing",
                 success: false
             });
         };
-
-        const user = await User.findOne({email});
+        const user = await User.findOne({ email });
         if (user) {
             return res.status(400).json({
-                message: 'User already exist',
-                success: false
+                message: 'User already exist with this email.',
+                success: false,
             })
         }
-
-        const hashedPassword = await bcrypt.hash( password , 10);
-        await User.create({ 
-            fullname, 
-            email, 
-            phoneNumber, 
-            password: hashedPassword, 
-            role })
-
-    return res.status(201).json({
-        message: "account is created",
-        success: true
-    })
-    } catch ( error ) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await User.create({
+            fullname,
+            email,
+            phoneNumber,
+            password: hashedPassword,
+            role
+        });
+        console.log( fullname, email, phoneNumber, password, role );
+        
+        return res.status(201).json({
+            message: "Account created successfully.",
+            success: true
+        });
+    } catch (error) {
         console.log(error);
     }
 }
